@@ -3,7 +3,7 @@
 姓名: uado233
 班级: 2班
 小组: 1组
-作业&总结链接: https://github.com/Uado1104/Python001-class01/tree/master/week02
+作业&总结链接: https://github.com/Uado1104/Python001-class01/tree/master/week03
 
 # 第二周学习笔记
 ## 掌握Scrapy框架
@@ -170,4 +170,4 @@ HTTP_PROXY_LIST = {
 全局变量在多个进程中不能共享：在子进程中修改全局变量对父进程中的全局变量没有影响，因为父进程在创建子进程时对全局变量做了一个变量，所以父进程中的全局变量与子进程的全局变量完全是不同的两个变量。
 
 ### multiprocessing通信
-multiprocessing支持进程之间的两种通信通道，Queue
+multiprocessing支持进程之间的两种通信通道，Queue。
