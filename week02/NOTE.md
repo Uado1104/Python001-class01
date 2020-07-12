@@ -139,3 +139,35 @@ except Exception as e:
 # finally:
 #     browser.close()
 ```
+
+## 下载中间件
+1.```process_request(request,spider)```<br>
+request对象经过下载中间件时会被调用，优先级高先调用。
+2.```proecess_reponse(request,response,spider)```<br>
+response对象经过下载中间件时会被调用，优先级高后调用
+3.```process_exception(request,exception,spider)```<br>
+当process_response()和process_request()抛出异常时会被调用
+4.```from_crawler(cls,crawler)```<br>
+使用crawler来创建中间器对象，并（必须）返回一个中间件对象
+### 具体步骤
+1. 在scrapy框架中找到settings.py文件
+2. 改写DOWNLOADER_MIDDLEWARES
+3. ```spider.middlewares.RandomHttpProxyMiddleware```spider为项目名称，middlewares为其中一个配置文件middlewares.py
+```
+DOWNLOADER_MIDDLEWARES = {
+    'spiders.middlewares.SpidersDownloaderMiddleware': 543,
+    'spider.middlewares.RandomHttpProxyMiddleware':400,
+}
+HTTP_PROXY_LIST = {
+    'http://52.179.231.206:80',
+    'http://95.0.194.241:9090',
+}
+```
+
+## 进程间的通信
+进程间主要的共享方式为：队列、管道、共享内存；资源的抢占：加锁机制
+### 共享方式
+全局变量在多个进程中不能共享：在子进程中修改全局变量对父进程中的全局变量没有影响，因为父进程在创建子进程时对全局变量做了一个变量，所以父进程中的全局变量与子进程的全局变量完全是不同的两个变量。
+
+### multiprocessing通信
+multiprocessing支持进程之间的两种通信通道，Queue
