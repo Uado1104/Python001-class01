@@ -1,3 +1,4 @@
+git clone http://gitee.com/wilsonyin/pythontrain.git
 学习笔记
 学号: G20200343050044
 姓名: uado233
