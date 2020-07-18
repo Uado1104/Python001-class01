@@ -23,6 +23,7 @@ sales = [{
 }]
 
 df2 = pd.DataFrame(sales)
+# 分组，将一个dateframe分成两个子dataframe
 df2.groupby('type').groups
 
 for a, b in df2.groupby('type'):
