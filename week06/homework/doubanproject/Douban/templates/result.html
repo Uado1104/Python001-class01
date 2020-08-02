@@ -1,0 +1,21 @@
+<h1 align="center" style="color:yellowgreen"><<红海行动>>影评</h1>
+<table border="1" cellspacing="0" bordercolor="#000000" width = "100%">
+    <thead>
+        <tr>
+            <th style="background-color:royalblue">id</th>
+            <th style="background-color:royalblue">评论</th>
+            <th style="background-color:royalblue">星级</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for short in shorts %}
+            {% if short.star_level > 3 %}
+                <tr>
+                    <td width="3%" align="center">{{short.id}}</td>
+                    <td>{{short.comment}}</td>
+                    <td width="3%" align="center" style="background-color:coral">{{short.star_level}}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
