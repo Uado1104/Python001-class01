@@ -1,5 +1,6 @@
 class Human(object):
     def __init__(self):
+        # self.表示实例化的一个本身
         self.name = None
         self.gender = None
 
