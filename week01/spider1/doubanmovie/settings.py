@@ -1,5 +1,6 @@
-from fake_useragent import UserAgent
-# Scrapy settings for spiders project
+# -*- coding: utf-8 -*-
+
+# Scrapy settings for doubanmovie project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -15,8 +16,20 @@ NEWSPIDER_MODULE = 'doubanmovie.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'spiders (+http://www.yourdomain.com)'
-USER_AGENT = 'doubanmovie(+http://www.yourdomain.com)'
+#USER_AGENT = 'doubanmovie (+http://www.yourdomain.com)'
+USER_AGENT_LIST=[
+'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36'
+    "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3",
+    "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3",
+    "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; 360SE)",
+    "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3",
+    "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3",
+    "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1061.0 Safari/536.3",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.24 (KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24",
+    "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/535.24 (KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24"
+]
+import random
+USER_AGENT = random.choice(USER_AGENT_LIST)
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -48,25 +61,15 @@ DOWNLOAD_DELAY = 1
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    'spiders.middlewares.SpidersSpiderMiddleware': 543,
+#    'doubanmovie.middlewares.DoubanmovieSpiderMiddleware': 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    'spiders.middlewares.SpidersDownloaderMiddleware': 543,
-# 数字小的默认会优先运行
+#    'doubanmovie.middlewares.DoubanmovieDownloaderMiddleware': 543,
 #}
-DOWNLOADER_MIDDLEWARES = {
-    'spiders.middlewares.SpidersDownloaderMiddleware': 543,
-    'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware':None,
-    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware':None,
-    'proxyspider.middlewares.RandomHttpProxyMiddleware':400,
-}
-HTTP_PROXY_LIST = {
-    'http://52.179.231.206:80',
-    'http://95.0.194.241:9090',
-}
+
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
 #EXTENSIONS = {
@@ -76,8 +79,11 @@ HTTP_PROXY_LIST = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 #ITEM_PIPELINES = {
-#    'spiders.pipelines.SpidersPipeline': 300,
+#    'doubanmovie.pipelines.DoubanmoviePipeline': 300,
 #}
+ITEM_PIPELINES = {
+    'doubanmovie.pipelines.DoubanmoviePipeline': 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html

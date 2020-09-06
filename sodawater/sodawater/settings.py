@@ -1,5 +1,5 @@
-from fake_useragent import UserAgent
-# Scrapy settings for spiders project
+
+# Scrapy settings for sodawater project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -7,40 +7,44 @@ from fake_useragent import UserAgent
 #     https://docs.scrapy.org/en/latest/topics/settings.html
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+from fake_useragent import UserAgent
+import requests
+BOT_NAME = 'sodawater'
 
-BOT_NAME = 'doubanmovie'
+SPIDER_MODULES = ['sodawater.spiders']
+NEWSPIDER_MODULE = 'sodawater.spiders'
 
-SPIDER_MODULES = ['doubanmovie.spiders']
-NEWSPIDER_MODULE = 'doubanmovie.spiders'
-
+s = requests.Session()
+#  会话对象：在 
+#
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'spiders (+http://www.yourdomain.com)'
-USER_AGENT = 'doubanmovie(+http://www.yourdomain.com)'
-
+#USER_AGENT = 'sodawater (+http://www.yourdomain.com)'
+#不去验证ssl
+ua = UserAgent(verify_ssl=False)
+USER_AGENT = ua.random
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-#CONCURRENT_REQUESTS = 32
+# CONCURRENT_REQUESTS = 32
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
 #DOWNLOAD_DELAY = 3
-DOWNLOAD_DELAY = 1
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
-#COOKIES_ENABLED = False
+# COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False
 
 # Override the default request headers:
-#DEFAULT_REQUEST_HEADERS = {
+# DEFAULT_REQUEST_HEADERS = {
 #   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
 #   'Accept-Language': 'en',
 #}
@@ -48,25 +52,15 @@ DOWNLOAD_DELAY = 1
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    'spiders.middlewares.SpidersSpiderMiddleware': 543,
+#    'sodawater.middlewares.SodawaterSpiderMiddleware': 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    'spiders.middlewares.SpidersDownloaderMiddleware': 543,
-# 数字小的默认会优先运行
+#    'sodawater.middlewares.SodawaterDownloaderMiddleware': 543,
 #}
-DOWNLOADER_MIDDLEWARES = {
-    'spiders.middlewares.SpidersDownloaderMiddleware': 543,
-    'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware':None,
-    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware':None,
-    'proxyspider.middlewares.RandomHttpProxyMiddleware':400,
-}
-HTTP_PROXY_LIST = {
-    'http://52.179.231.206:80',
-    'http://95.0.194.241:9090',
-}
+
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
 #EXTENSIONS = {
@@ -76,7 +70,7 @@ HTTP_PROXY_LIST = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 #ITEM_PIPELINES = {
-#    'spiders.pipelines.SpidersPipeline': 300,
+#    'sodawater.pipelines.SodawaterPipeline': 300,
 #}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
