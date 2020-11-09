@@ -1,125 +1,52 @@
-# 1 Python是一门简洁的语言
+'''
+项目要求：
+安装并使用 requests、bs4 库，爬取猫眼电影（）的前 10 个电影名称、电影类型和上映时间，并以 UTF-8 字符集保存到 csv 格式的文件中。
+'''
+# -*- coding: utf-8 -*-
+## 使用BeautifulSoup解析网页
+import requests
+from bs4 import BeautifulSoup as bs
+# bs4是第三方库需要使用pip命令安装
+import csv
 
-int temp = var1 ;
-var1 = var2 ;
-var2 = temp ;
+user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
 
-var2, var1 = var1, var2
+header = {'user-agent':user_agent,
+         'Cookie':'__mta=251425081.1593139858651.1593156647624.1593158143829.13; uuid_n_v=v1; uuid=DADDD3F0B75711EAAD7CEBC74F78E0F95A199D6306184D0682B7CFA7C93F750E; _csrf=e3f91413df3e7db171fcb78a33b448d90bad78e4179ac24fe70d618ace08d924; _lxsdk_cuid=172ee890511c8-02e9636521c6b2-31637403-13c680-172ee890512c8; _lxsdk=DADDD3F0B75711EAAD7CEBC74F78E0F95A199D6306184D0682B7CFA7C93F750E; mojo-uuid=d7ae468864ff3ff55d52f747940c6213; _lx_utm=utm_source%3DBaidu%26utm_medium%3Dorganic; Hm_lvt_703e94591e87be68cc8da0da7cbd0be2=1593139858,1593142110; __mta=251425081.1593139858651.1593142110615.1593142228116.8; mojo-session-id={"id":"1a38e36030f97fc123f9d2afb95d1caf","time":1593155873927}; mojo-trace-id=4; Hm_lpvt_703e94591e87be68cc8da0da7cbd0be2=1593158143; _lxsdk_s=172ef7d6cbc-cf4-28e-960%7C%7C7'}
 
+myurl = 'https://maoyan.com/films?showType=3'
 
-# 2 所有语言的开头 Hello world
-print('Hello, World')
+response = requests.get(myurl,headers=header)
 
-# 3 Python可交互可字节码
->>> x = 1
->>> help(x)
->>> dir()
->>> exit()
+bs_info = bs(response.text, 'html.parser')
+# print(bs_info)
 
-# 4 内置数据类型
-数值 布尔
-字符串
-列表、元组、字典、集合
+list_all=[]
+#创建一个列表，用于存储信息
+i=0
+# 定义爬取电影的数量
+top=10
 
-# 4.1 数值常见有 整数、浮点数、复数、布尔值
-整数  1 -5 100 8888   
-整数没有大小限制，受限于内存
+# Python 中使用 for in 形式的循环,Python使用缩进来做语句块分隔
+for tags in bs_info.find_all('div', class_='movie-hover-info'):
+    i+=1
+    if(i<=top):
+        # strup = true用于删除空白
+        category = tags.get_text(' ',strip=True)
+        print(category)
+        list = category.split(' ')
+        # 'a'模式，追加内容，至于"newline="因为我们的csv文件的类型，防止我们写入东西的时候出现空行。
+        csv_1 = open('csv_out.csv','a',newline='')
+        outputWriter = csv.writer(csv_1)
 
-浮点数   2.5 4.8
-
-复数 1+2j 5.6+7.8j
-
-布尔  True 、 False
-
-数值支持算数运算  + - * /  //整数除法 %求模 **求幂
-
-支持数学函数
-import math
-math.pow(2, 3)
-
-# 4.2 字符串 string
-'a'
-"a"
-'''a'''
-"""a"""
-
-# 4.3 列表 list
-[]
-x = [1, 'a', 'A']
-列表可以通过下标访问
-x[0]
-x[-1]
-Python支持对列表的内置函数 len max min
-也支持列表本身的方法 append count extend index insert pop remove reverse sort
-len(x)
-x.reverse()
-还支持操作符 in + *
-参考： 官方文档-教程
-
-# 4.4 元组 tuple
-元组和列表类似，但是一旦被创建就不可修改， 支持操作符 、内置函数 
-本身的方法只能支持两个 count index
-可以显式转换
-y = tuple(x)
-z = list(y)
-type(z)
-
-# 4.5 字典 dict
-字典本质是哈希表，key只能是数值、字符串、元组
-dict1 = {'a':1, 'b':2}
-本身的方法支持copy、get、items、keys、values、update
-
-# 4.6 集合 set
-由基本对象组成的无序集，特点：唯一性
-set1 = set([1, 2, 3, 4, 5, 3, 2, 1])
-print(set1)
-
-# 5 流程控制
-False 0  零值None 空(列表、字典、字符串等) 表示假值
-True 其他值  表示真值
-
-# 5.1 if
-x = 1
-if x < 10:
-    y = 1
-elif x > 10:
-    y = 2
-else:
-    y = 3
-z = 4
-代码块与缩进
-
-
-# 5.2 while  (支持break continue)
-x = 2
-y = 1
-while x > y :
-    pass
-
-# 5.3 for  (支持break continue)
-for i in z:
-    print(i)
-
-# 6 函数
-def func1(x, y):
-    return x + y
-
-print(func1(10, 20))
-
-# 7 面向对象
-class DemoClassName:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-    
-    def add(self):
-        return self.x + self.y
-
-demo = DemoClassName(10, 20)
-print(demo.add())
-
-# 8 标准库的引入
-import datetime
-datetime.date.today()
-from datetime import date
-date.today()
+        if len(list)==9:
+            print(list[0]+'|'+list[4]+'|'+list[8])
+            outputWriter.writerow([list[0],list[4],list[8]])
+            csv_1.close()
+        else:
+            print(list[0]+'|'+list[2]+'|'+list[6])
+            outputWriter.writerow([list[0],list[2],list[6]])
+            csv_1.close()
+        print('------------------')
+    else:
+        break

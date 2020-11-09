@@ -1,72 +1,53 @@
+'''
+项目要求：
+安装并使用 requests、bs4 库，爬取猫眼电影（）的前 10 个电影名称、电影类型和上映时间，并以 UTF-8 字符集保存到 csv 格式的文件中。
+'''
 # -*- coding: utf-8 -*-
-import re
-import pandas as pd
-import lxml.etree
-from bs4 import BeautifulSoup as bs
+## 使用BeautifulSoup解析网页
+
 import requests
-import io
-import sys
+from bs4 import BeautifulSoup as bs
+# bs4是第三方库需要使用pip命令安装
+import csv
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='gb18030')
-# 使用BeautifulSoup解析网页
-header = {
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-    "Accept-Encoding": "gzip, deflate, sdch",
-    "Accept-Language": "zh-CN,zh;q=0.8",
-    "Connection": "close",
-    "Cookie": "_gauges_unique_hour=1; _gauges_unique_day=1; _gauges_unique_month=1; _gauges_unique_year=1; _gauges_unique=1",
-    "Referer": "http://httpbin.org/",
-    "Upgrade-Insecure-Requests": "1",
-    "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.98 Safari/537.36 LBBROWSER"
-}
+
+user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36'
+
+header = {'user-agent':user_agent,
+         'Cookie':'__mta=251425081.1593139858651.1593156647624.1593158143829.13; uuid_n_v=v1; uuid=DADDD3F0B75711EAAD7CEBC74F78E0F95A199D6306184D0682B7CFA7C93F750E; _csrf=e3f91413df3e7db171fcb78a33b448d90bad78e4179ac24fe70d618ace08d924; _lxsdk_cuid=172ee890511c8-02e9636521c6b2-31637403-13c680-172ee890512c8; _lxsdk=DADDD3F0B75711EAAD7CEBC74F78E0F95A199D6306184D0682B7CFA7C93F750E; mojo-uuid=d7ae468864ff3ff55d52f747940c6213; _lx_utm=utm_source%3DBaidu%26utm_medium%3Dorganic; Hm_lvt_703e94591e87be68cc8da0da7cbd0be2=1593139858,1593142110; __mta=251425081.1593139858651.1593142110615.1593142228116.8; mojo-session-id={"id":"1a38e36030f97fc123f9d2afb95d1caf","time":1593155873927}; mojo-trace-id=4; Hm_lpvt_703e94591e87be68cc8da0da7cbd0be2=1593158143; _lxsdk_s=172ef7d6cbc-cf4-28e-960%7C%7C7'}
+
 myurl = 'https://maoyan.com/films?showType=3'
-response = requests.get(myurl, headers=header)
+
+response = requests.get(myurl,headers=header)
+
 bs_info = bs(response.text, 'html.parser')
+# print(bs_info)
+
+list_all=[]
+#创建一个列表，用于存储信息
+
+i=0
+top=10
+
 # Python 中使用 for in 形式的循环,Python使用缩进来做语句块分隔
-urls = []
-film_name = []
-plan_date = []
-film_types = []
-for tags in bs_info.find_all('div', attrs={'class': 'channel-detail movie-item-title'}):
-    for atag in tags.find_all('a', ):
-        # 获取所有链接
-        url = 'https://maoyan.com' + atag.get('href')
-        urls.append(url)
+for tags in bs_info.find_all('div', class_='movie-hover-info'):
+    i+=1
+    if(i<=top):
+        category=tags.get_text(' ',strip=True)
+        print(category)
+        list=category.split(' ')
+        #
+        csv_1=open('csv_out.csv','a',newline='')
+        outputWriter=csv.writer(csv_1)
 
-
-def get_url_name(furl):
-    header = {
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-        "Accept-Encoding": "gzip, deflate, sdch",
-        "Accept-Language": "zh-CN,zh;q=0.8",
-        "Connection": "close",
-        "Cookie": "_gauges_unique_hour=1; _gauges_unique_day=1; _gauges_unique_month=1; _gauges_unique_year=1; _gauges_unique=1",
-        "Referer": "http://httpbin.org/",
-        "Upgrade-Insecure-Requests": "1",
-        "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.98 Safari/537.36 LBBROWSER"
-    }
-    response = requests.get(furl, headers=header)
-    # xml化处理
-    selector = lxml.etree.HTML(response.text)
-    # 电影名称
-    global film_name
-    film = selector.xpath('/html/body/div[3]/div/div[2]/div[1]/h1/text()')
-    film_name.append(film[0])
-    # 上映日期
-    global plan_date
-    release_date = selector.xpath('/html/body/div[3]/div/div[2]/div[1]/ul/li[3]/text()')
-    release_date_update = re.sub(r'[^\d-]', "", release_date[0])
-    plan_date.append(release_date_update)
-    # 电影类型
-    global film_types
-    Movie_Type = selector.xpath('/html/body/div[3]/div/div[2]/div[1]/ul/li[1]/*/text()')
-    film_types.append(','.join(Movie_Type))
-
-
-for i in urls[0:10]:
-    get_url_name(i)
-
-mylist = {}
-mylist = {'电影名称': film_name, '上映日期': plan_date, '电影类型': film_types}
-movie = pd.DataFrame(data=mylist)
-movie.to_csv('./movie.csv', encoding='utf8', index=False, header=False)
+        if len(list)==9:
+            print(list[0]+'|'+list[4]+'|'+list[8])
+            outputWriter.writerow([list[0],list[4],list[8]])
+            csv_1.close()
+        else:
+            print(list[0]+'|'+list[2]+'|'+list[6])
+            outputWriter.writerow([list[0],list[2],list[6]])
+            csv_1.close()
+        print('------------------')
+    else:
+        break
